@@ -3,6 +3,8 @@ import ora from "ora";
 import type { AiProvider, AiProviderName } from "../ai/ai-provider.js";
 import { GeminiProvider } from "../ai/gemini.provider.js";
 import { OllamaProvider } from "../ai/ollama.provider.js";
+import { getConfig } from "../config/config-store.js";
+import type { CommitAiConfig, CommitLanguage } from "../config/config-store.js";
 import { runCommitFlow } from "../core/commit-flow.js";
 import { CliError, getErrorMessage, getExitCode } from "../utils/errors.js";
 import { logger } from "../utils/logger.js";
@@ -18,12 +20,17 @@ interface CommitCommandOptions {
   geminiApiKey?: string;
   geminiBaseUrl?: string;
   temperature?: number;
-  language?: "en" | "vi";
+  language?: CommitLanguage;
   maxLength?: number;
   maxDiffChars?: number;
   numPredict?: number;
   maxOutputTokens?: number;
 }
+
+type ConfigBackedOptionKey = Extract<
+  keyof CommitCommandOptions,
+  keyof CommitAiConfig
+>;
 
 const parseNumberOption = (value: string): number => {
   const parsed = Number(value);
@@ -62,6 +69,79 @@ const createProvider = (options: CommitCommandOptions): AiProvider => {
     temperature: options.temperature,
     numPredict: options.numPredict,
   });
+};
+
+const hasCliOption = (command: Command, key: string): boolean =>
+  command.getOptionValueSource(key) === "cli";
+
+const resolveCommitOptions = (
+  options: CommitCommandOptions,
+  command: Command,
+): CommitCommandOptions & {
+  autoStage: boolean;
+  editMessage: boolean;
+  confirmCommit: boolean;
+} => {
+  const config = getConfig();
+
+  const resolved: CommitCommandOptions & {
+    autoStage: boolean;
+    editMessage: boolean;
+    confirmCommit: boolean;
+  } = {
+    provider: config.provider,
+    model: config.model,
+    ollamaUrl: config.ollamaUrl,
+    geminiApiKey: config.geminiApiKey,
+    geminiBaseUrl: config.geminiBaseUrl,
+    temperature: config.temperature,
+    language: config.language,
+    maxLength: config.maxLength,
+    maxDiffChars: config.maxDiffChars,
+    numPredict: config.numPredict,
+    maxOutputTokens: config.maxOutputTokens,
+    push: options.push ?? false,
+    autoStage: config.autoStage,
+    editMessage: config.editMessage,
+    confirmCommit: config.confirmCommit,
+  };
+
+  const optionKeys: ConfigBackedOptionKey[] = [
+    "provider",
+    "model",
+    "ollamaUrl",
+    "geminiApiKey",
+    "geminiBaseUrl",
+    "temperature",
+    "language",
+    "maxLength",
+    "maxDiffChars",
+    "numPredict",
+    "maxOutputTokens",
+  ];
+
+  const resolvedValues = resolved as unknown as Record<string, unknown>;
+  const cliValues = options as unknown as Record<string, unknown>;
+
+  for (const key of optionKeys) {
+    if (hasCliOption(command, key)) {
+      resolvedValues[key] = cliValues[key];
+    }
+  }
+
+  if (hasCliOption(command, "stage")) {
+    resolved.autoStage = options.stage ?? true;
+  }
+
+  if (hasCliOption(command, "edit")) {
+    resolved.editMessage = options.edit ?? true;
+  }
+
+  if (hasCliOption(command, "yes")) {
+    resolved.confirmCommit = !(options.yes ?? false);
+  }
+
+  return resolved;
 };
 
 export const createCommitCommand = (): Command => {
@@ -118,23 +198,23 @@ export const createCommitCommand = (): Command => {
       parseNumberOption,
       80,
     )
-    .action(async (options: CommitCommandOptions) => {
+    .action(async (options: CommitCommandOptions, command: Command) => {
       const spinner = ora("Generating commit message");
 
       try {
-        const language = options.language === "vi" ? "vi" : "en";
-        const provider = createProvider(options);
+        const resolvedOptions = resolveCommitOptions(options, command);
+        const provider = createProvider(resolvedOptions);
 
         const result = await runCommitFlow({
           provider,
-          push: options.push ?? false,
-          autoStage: options.stage ?? true,
-          editMessage: options.edit ?? true,
-          confirmCommit: !(options.yes ?? false),
+          push: resolvedOptions.push ?? false,
+          autoStage: resolvedOptions.autoStage,
+          editMessage: resolvedOptions.editMessage,
+          confirmCommit: resolvedOptions.confirmCommit,
           prompt: {
-            language,
-            maxLength: options.maxLength,
-            maxDiffChars: options.maxDiffChars,
+            language: resolvedOptions.language,
+            maxLength: resolvedOptions.maxLength,
+            maxDiffChars: resolvedOptions.maxDiffChars,
           },
           onGenerateStart: () => {
             spinner.start();

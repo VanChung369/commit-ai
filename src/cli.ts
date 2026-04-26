@@ -2,15 +2,18 @@
 
 import { Command } from "commander";
 import { createCommitCommand } from "./commands/commit.command.js";
+import { createConfigCommand } from "./commands/config.command.js";
 
 const program = new Command();
 const commitCommand = createCommitCommand();
+const configCommand = createConfigCommand();
 
 program
   .name("commit-ai")
   .description("Generate Git commit messages with self-hosted AI")
   .version("1.0.0")
-  .addCommand(commitCommand);
+  .addCommand(commitCommand)
+  .addCommand(configCommand);
 
 program
   .option("-p, --push", "push after committing")

@@ -1,0 +1,147 @@
+import Conf from "conf";
+import type { AiProviderName } from "../ai/ai-provider.js";
+import { CliError } from "../utils/errors.js";
+
+export type CommitLanguage = "en" | "vi";
+
+export interface CommitAiConfig {
+  provider: AiProviderName;
+  model?: string;
+  ollamaUrl: string;
+  geminiApiKey?: string;
+  geminiBaseUrl: string;
+  temperature: number;
+  language: CommitLanguage;
+  maxLength: number;
+  maxDiffChars: number;
+  numPredict: number;
+  maxOutputTokens: number;
+  autoStage: boolean;
+  editMessage: boolean;
+  confirmCommit: boolean;
+}
+
+export const defaultConfig: CommitAiConfig = {
+  provider: "ollama",
+  ollamaUrl: "http://localhost:11434",
+  geminiBaseUrl: "https://generativelanguage.googleapis.com/v1beta",
+  temperature: 0.2,
+  language: "en",
+  maxLength: 72,
+  maxDiffChars: 4000,
+  numPredict: 40,
+  maxOutputTokens: 80,
+  autoStage: true,
+  editMessage: true,
+  confirmCommit: true,
+};
+
+type ConfigKey = keyof CommitAiConfig;
+
+export const configKeys: ConfigKey[] = [
+  "provider",
+  "model",
+  "ollamaUrl",
+  "geminiApiKey",
+  "geminiBaseUrl",
+  "temperature",
+  "language",
+  "maxLength",
+  "maxDiffChars",
+  "numPredict",
+  "maxOutputTokens",
+  "autoStage",
+  "editMessage",
+  "confirmCommit",
+];
+
+const config = new Conf<CommitAiConfig>({
+  projectName: "commit-ai",
+  defaults: defaultConfig,
+});
+
+const numberKeys = new Set<ConfigKey>([
+  "temperature",
+  "maxLength",
+  "maxDiffChars",
+  "numPredict",
+  "maxOutputTokens",
+]);
+
+const booleanKeys = new Set<ConfigKey>([
+  "autoStage",
+  "editMessage",
+  "confirmCommit",
+]);
+
+const parseBoolean = (value: string): boolean => {
+  if (["true", "1", "yes", "on"].includes(value.toLowerCase())) {
+    return true;
+  }
+
+  if (["false", "0", "no", "off"].includes(value.toLowerCase())) {
+    return false;
+  }
+
+  throw new CliError(`Invalid boolean value: ${value}`);
+};
+
+export const getConfig = (): CommitAiConfig => ({
+  ...defaultConfig,
+  ...config.store,
+});
+
+export const getConfigPath = (): string => config.path;
+
+export const getConfigValue = (key: string): unknown => {
+  const configKey = parseConfigKey(key);
+  return config.get(configKey);
+};
+
+export const setConfigValue = (key: string, rawValue: string): void => {
+  const configKey = parseConfigKey(key);
+
+  if (
+    configKey === "provider" &&
+    rawValue !== "ollama" &&
+    rawValue !== "gemini"
+  ) {
+    throw new CliError('Invalid provider. Use "ollama" or "gemini".');
+  }
+
+  if (configKey === "language" && rawValue !== "en" && rawValue !== "vi") {
+    throw new CliError('Invalid language. Use "en" or "vi".');
+  }
+
+  if (numberKeys.has(configKey)) {
+    const value = Number(rawValue);
+
+    if (Number.isNaN(value)) {
+      throw new CliError(`Invalid number value: ${rawValue}`);
+    }
+
+    config.set(configKey, value);
+    return;
+  }
+
+  if (booleanKeys.has(configKey)) {
+    config.set(configKey, parseBoolean(rawValue));
+    return;
+  }
+
+  config.set(configKey, rawValue);
+};
+
+export const resetConfig = (): void => {
+  config.clear();
+};
+
+const parseConfigKey = (key: string): ConfigKey => {
+  if (!configKeys.includes(key as ConfigKey)) {
+    throw new CliError(
+      `Unknown config key: ${key}. Valid keys: ${configKeys.join(", ")}`,
+    );
+  }
+
+  return key as ConfigKey;
+};
