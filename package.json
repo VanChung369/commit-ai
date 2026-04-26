@@ -1,6 +1,6 @@
 {
   "name": "gitcai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AI-powered Git commit message generator CLI for Conventional Commits using Ollama or Gemini",
   "main": "./dist/cli.js",
   "engines": {
