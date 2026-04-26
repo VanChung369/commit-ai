@@ -17,9 +17,16 @@ program
   .option("--no-edit", "skip editing the generated commit message")
   .option("--no-stage", "do not auto-stage files when no staged diff exists")
   .option("-y, --yes", "skip commit confirmation")
-  .option("-m, --model <model>", "Ollama model name", "qwen2.5:1.5b")
+  .option("--provider <provider>", "AI provider: ollama or gemini", "ollama")
+  .option("-m, --model <model>", "model name")
   .option("--ollama-url <url>", "Ollama base URL", "http://localhost:11434")
-  .option("-t, --temperature <number>", "Ollama generation temperature", "0.2")
+  .option("--gemini-api-key <key>", "Gemini API key")
+  .option(
+    "--gemini-base-url <url>",
+    "Gemini API base URL",
+    "https://generativelanguage.googleapis.com/v1beta",
+  )
+  .option("-t, --temperature <number>", "generation temperature", "0.2")
   .option("--language <language>", "commit message language: en or vi", "en")
   .option("--max-length <number>", "maximum commit message length", "72")
   .option(
@@ -28,6 +35,11 @@ program
     "4000",
   )
   .option("--num-predict <number>", "maximum tokens Ollama should generate", "40")
+  .option(
+    "--max-output-tokens <number>",
+    "maximum tokens Gemini should generate",
+    "80",
+  )
   .action(async () => {
     const args = ["node", "commit-ai", ...process.argv.slice(2)];
     await commitCommand.parseAsync(args);
