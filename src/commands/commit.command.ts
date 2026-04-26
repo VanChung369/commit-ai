@@ -172,7 +172,7 @@ export const createCommitCommand = (): Command => {
       "-t, --temperature <number>",
       "generation temperature",
       parseNumberOption,
-      0.2,
+      0,
     )
     .option("--language <language>", "commit message language: en or vi", "en")
     .option(
@@ -197,7 +197,7 @@ export const createCommitCommand = (): Command => {
       "--max-output-tokens <number>",
       "maximum tokens Gemini should generate",
       parseNumberOption,
-      80,
+      512,
     )
     .action(async (options: CommitCommandOptions, command: Command) => {
       const spinner = ora("Generating commit message");

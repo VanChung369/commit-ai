@@ -30,7 +30,7 @@ export const buildCommitPrompt = (
   return `
 Task: write ONE git commit message for the diff.
 
-Output only this format:
+Return only one line in this exact format:
 type(scope): description
 
 Types: feat, fix, refactor, chore, docs, style, test, perf
@@ -40,6 +40,7 @@ Rules:
 - no code block
 - no quotes
 - no explanation
+- do not copy the diff
 - max ${maxLength} characters
 - ${languageRule}
 - if unsure, output: chore(repo): update code
@@ -48,11 +49,6 @@ Good examples:
 feat(auth): add password reset flow
 fix(api): handle empty user response
 refactor(cli): simplify option parsing
-
-Bad examples:
-\`\`\`diff
-Here is the commit message:
-The commit message is feat(cli): add command
 
 Diff:
 <<<DIFF

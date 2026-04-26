@@ -8,6 +8,10 @@
   "bin": {
     "commit-ai": "./dist/cli.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "dev": "tsx src/cli.ts",
     "build": "tsc",

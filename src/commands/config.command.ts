@@ -15,7 +15,18 @@ import { getErrorMessage, getExitCode } from "../utils/errors.js";
 import { logger } from "../utils/logger.js";
 
 const printConfig = (): void => {
-  console.log(JSON.stringify(getConfig(), null, 2));
+  const config = getConfig();
+
+  console.log(
+    JSON.stringify(
+      {
+        ...config,
+        geminiApiKey: config.geminiApiKey ? "***" : undefined,
+      },
+      null,
+      2,
+    ),
+  );
 };
 
 const askSharedConfig = async (): Promise<
@@ -84,7 +95,7 @@ const askGeminiConfig = async (): Promise<Partial<CommitAiConfig>> => {
   });
   const model = await input({
     message: "Gemini model",
-    default: currentConfig.model ?? "gemini-2.5-flash",
+    default: currentConfig.model ?? "gemini-3-flash-preview",
   });
 
   return {

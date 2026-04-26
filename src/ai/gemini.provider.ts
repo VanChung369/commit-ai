@@ -19,6 +19,7 @@ interface GeminiContent {
 
 interface GeminiCandidate {
   content?: GeminiContent;
+  finishReason?: string;
 }
 
 interface GeminiErrorResponse {
@@ -57,19 +58,20 @@ export class GeminiProvider implements AiProvider {
     this.baseUrl = (
       options.baseUrl ?? "https://generativelanguage.googleapis.com/v1beta"
     ).replace(/\/+$/, "");
-    this.temperature = options.temperature ?? 0.2;
-    this.maxOutputTokens = options.maxOutputTokens ?? 80;
+    this.temperature = options.temperature ?? 0;
+    this.maxOutputTokens = options.maxOutputTokens ?? 512;
   }
 
   async generateCommitMessage(
     input: GenerateCommitMessageInput,
   ): Promise<string> {
     const response = await fetch(
-      `${this.baseUrl}/models/${this.model}:generateContent?key=${this.apiKey}`,
+      `${this.baseUrl}/models/${this.model}:generateContent`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-goog-api-key": this.apiKey,
         },
         body: JSON.stringify({
           contents: [
@@ -100,10 +102,20 @@ export class GeminiProvider implements AiProvider {
       throw new Error(`Gemini error: ${data.error.message}`);
     }
 
-    const message = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    const candidate = data.candidates?.[0];
+    const message = candidate?.content?.parts
+      ?.map((part) => part.text ?? "")
+      .join("")
+      .trim();
 
     if (!message) {
       throw new Error("Gemini returned an empty commit message");
+    }
+
+    if (candidate?.finishReason === "MAX_TOKENS" && !message.includes(":")) {
+      throw new Error(
+        `Gemini response was truncated. Increase maxOutputTokens above ${this.maxOutputTokens}.`,
+      );
     }
 
     return message;

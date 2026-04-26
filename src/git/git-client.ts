@@ -28,7 +28,28 @@ export class GitClient {
   }
 
   async getStagedDiff(): Promise<string> {
-    return this.git.diff(["--cached", "--ignore-space-at-eol"]);
+    const lockfiles = [
+      "package-lock.json",
+      "yarn.lock",
+      "pnpm-lock.yaml",
+      "bun.lockb",
+      "composer.lock",
+      "Cargo.lock",
+      "Gemfile.lock",
+      "poetry.lock",
+      "mix.lock",
+      "go.sum",
+    ];
+
+    const excludePathspecs = lockfiles.map((file) => `:(exclude)${file}`);
+
+    return this.git.diff([
+      "--cached",
+      "--ignore-space-at-eol",
+      "--",
+      ".",
+      ...excludePathspecs,
+    ]);
   }
 
   async stageAll(): Promise<void> {
