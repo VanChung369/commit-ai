@@ -19,6 +19,7 @@
     "dev": "tsx src/cli.ts",
     "prebuild": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "tsc",
+    "test": "yarn build && node --test",
     "prepack": "yarn build",
     "prepublishOnly": "yarn build",
     "start": "node dist/cli.js"
