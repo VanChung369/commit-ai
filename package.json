@@ -1,15 +1,32 @@
 {
   "name": "gitcai",
   "version": "1.0.0",
+  "description": "AI-powered Git commit message generator CLI for Conventional Commits using Ollama or Gemini",
   "main": "./dist/cli.js",
   "engines": {
     "node": ">=20"
   },
+  "keywords": [
+    "git",
+    "commit",
+    "commit-message",
+    "ai",
+    "cli",
+    "conventional-commits",
+    "ollama",
+    "gemini",
+    "developer-tools"
+  ],
+  "homepage": "https://github.com/VanChung369/gitcai#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/VanChung369/gitcai.git"
   },
+  "bugs": {
+    "url": "https://github.com/VanChung369/gitcai/issues"
+  },
   "license": "MIT",
+  "author": "VanChung369",
   "publishConfig": {
     "access": "public"
   },

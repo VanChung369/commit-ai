@@ -1,12 +1,22 @@
-# gitcai
+# gitcai - AI Git Commit Message Generator CLI
 
-Generate Git commit messages with AI, then commit from your terminal.
+[![npm version](https://img.shields.io/npm/v/gitcai)](https://www.npmjs.com/package/gitcai)
 
-`gitcai` reads your Git diff, asks Ollama or Gemini to write a Conventional Commit message, lets you edit the message, and runs `git commit`.
+Generate Conventional Commit messages from your Git diff using Ollama or Gemini, then commit from your terminal.
+
+`gitcai` is an AI Git commit message generator CLI. It reads your staged Git diff, asks Ollama or Gemini to write a clear Conventional Commit message, lets you edit the result, and runs `git commit`.
+
+## Quick Start
+
+```bash
+npm install -g gitcai
+gitcai
+```
 
 ## What It Does
 
 - Generates commit messages from your Git changes
+- Creates Conventional Commit messages from staged diffs
 - Supports `ollama` and `gemini`
 - Runs a first-time setup when you use it for the first time
 - Lets you edit the generated commit message before committing

@@ -10,7 +10,7 @@ const configCommand = createConfigCommand();
 
 program
   .name("gitcai")
-  .description("Generate Git commit messages with self-hosted AI")
+  .description("Generate AI-powered Git commit messages from your diff")
   .version("1.0.0")
   .addCommand(commitCommand)
   .addCommand(configCommand);
