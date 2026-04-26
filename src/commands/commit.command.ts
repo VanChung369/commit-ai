@@ -3,7 +3,8 @@ import ora from "ora";
 import type { AiProvider, AiProviderName } from "../ai/ai-provider.js";
 import { GeminiProvider } from "../ai/gemini.provider.js";
 import { OllamaProvider } from "../ai/ollama.provider.js";
-import { getConfig } from "../config/config-store.js";
+import { runInteractiveConfigSetup } from "./config.command.js";
+import { getConfig, isConfigInitialized } from "../config/config-store.js";
 import type { CommitAiConfig, CommitLanguage } from "../config/config-store.js";
 import { runCommitFlow } from "../core/commit-flow.js";
 import { CliError, getErrorMessage, getExitCode } from "../utils/errors.js";
@@ -202,6 +203,12 @@ export const createCommitCommand = (): Command => {
       const spinner = ora("Generating commit message");
 
       try {
+        if (!isConfigInitialized()) {
+          logger.info("First-time setup");
+          await runInteractiveConfigSetup();
+          logger.success("Config saved");
+        }
+
         const resolvedOptions = resolveCommitOptions(options, command);
         const provider = createProvider(resolvedOptions);
 

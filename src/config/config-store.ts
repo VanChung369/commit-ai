@@ -5,6 +5,7 @@ import { CliError } from "../utils/errors.js";
 export type CommitLanguage = "en" | "vi";
 
 export interface CommitAiConfig {
+  initialized: boolean;
   provider: AiProviderName;
   model?: string;
   ollamaUrl: string;
@@ -22,6 +23,7 @@ export interface CommitAiConfig {
 }
 
 export const defaultConfig: CommitAiConfig = {
+  initialized: false,
   provider: "ollama",
   ollamaUrl: "http://localhost:11434",
   geminiBaseUrl: "https://generativelanguage.googleapis.com/v1beta",
@@ -39,6 +41,7 @@ export const defaultConfig: CommitAiConfig = {
 type ConfigKey = keyof CommitAiConfig;
 
 export const configKeys: ConfigKey[] = [
+  "initialized",
   "provider",
   "model",
   "ollamaUrl",
@@ -69,6 +72,7 @@ const numberKeys = new Set<ConfigKey>([
 ]);
 
 const booleanKeys = new Set<ConfigKey>([
+  "initialized",
   "autoStage",
   "editMessage",
   "confirmCommit",
@@ -92,6 +96,9 @@ export const getConfig = (): CommitAiConfig => ({
 });
 
 export const getConfigPath = (): string => config.path;
+
+export const isConfigInitialized = (): boolean =>
+  config.get("initialized", false);
 
 export const getConfigValue = (key: string): unknown => {
   const configKey = parseConfigKey(key);
@@ -130,6 +137,14 @@ export const setConfigValue = (key: string, rawValue: string): void => {
   }
 
   config.set(configKey, rawValue);
+};
+
+export const setConfigValues = (values: Partial<CommitAiConfig>): void => {
+  for (const [key, value] of Object.entries(values)) {
+    if (value !== undefined) {
+      config.set(key, value);
+    }
+  }
 };
 
 export const resetConfig = (): void => {
