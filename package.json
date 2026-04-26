@@ -1,15 +1,21 @@
 {
-  "name": "commit-ai",
+  "name": "gitcai",
   "version": "1.0.0",
   "main": "./dist/cli.js",
   "engines": {
     "node": ">=20"
   },
-  "repository": "https://github.com/VanChung369/commit-ai.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VanChung369/gitcai.git"
+  },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "bin": {
-    "commit-ai": "./dist/cli.js"
+    "gitcai": "dist/cli.js"
   },
   "files": [
     "dist",

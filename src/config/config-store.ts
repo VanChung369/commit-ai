@@ -59,7 +59,7 @@ export const configKeys: ConfigKey[] = [
 ];
 
 const config = new Conf<CommitAiConfig>({
-  projectName: "commit-ai",
+  projectName: "gitcai",
   defaults: defaultConfig,
 });
 

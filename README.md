@@ -1,8 +1,8 @@
-# commit-ai
+# gitcai
 
 Generate Git commit messages with AI, then commit from your terminal.
 
-`commit-ai` reads your Git diff, asks Ollama or Gemini to write a Conventional Commit message, lets you edit the message, and runs `git commit`.
+`gitcai` reads your Git diff, asks Ollama or Gemini to write a Conventional Commit message, lets you edit the message, and runs `git commit`.
 
 ## What It Does
 
@@ -28,45 +28,45 @@ Generate Git commit messages with AI, then commit from your terminal.
 ### From npm
 
 ```bash
-npm install -g commit-ai
+npm install -g gitcai
 ```
 
 Then run:
 
 ```bash
-commit-ai
+gitcai
 ```
 
 ### From Yarn
 
 ```bash
-yarn global add commit-ai
+yarn global add gitcai
 ```
 
 Then run:
 
 ```bash
-commit-ai
+gitcai
 ```
 
 ### From This Repository
 
 ```bash
-git clone https://github.com/VanChung369/commit-ai.git
-cd commit-ai
+git clone https://github.com/VanChung369/gitcai.git
+cd gitcai
 yarn install
 yarn build
 yarn link
 ```
 
-Now the `commit-ai` command is available globally on your machine.
+Now the `gitcai` command is available globally on your machine.
 
 ## First-Time Setup
 
 The first time you run:
 
 ```bash
-commit-ai
+gitcai
 ```
 
 the tool asks for only the required setup:
@@ -80,7 +80,7 @@ the tool asks for only the required setup:
 You can also run setup manually:
 
 ```bash
-commit-ai config setup
+gitcai config setup
 ```
 
 ## Basic Usage
@@ -94,7 +94,7 @@ cd path/to/your/repo
 Run:
 
 ```bash
-commit-ai
+gitcai
 ```
 
 The tool will:
@@ -109,31 +109,31 @@ The tool will:
 Commit and push:
 
 ```bash
-commit-ai --push
+gitcai --push
 ```
 
 Skip editing:
 
 ```bash
-commit-ai --no-edit
+gitcai --no-edit
 ```
 
 Skip confirmation:
 
 ```bash
-commit-ai --yes
+gitcai --yes
 ```
 
 Skip both editing and confirmation:
 
 ```bash
-commit-ai --no-edit --yes
+gitcai --no-edit --yes
 ```
 
 Do not auto-stage files:
 
 ```bash
-commit-ai --no-stage
+gitcai --no-stage
 ```
 
 ## Ollama Setup
@@ -141,23 +141,23 @@ commit-ai --no-stage
 Local Ollama:
 
 ```bash
-commit-ai config set provider ollama
-commit-ai config set ollamaUrl http://localhost:11434
-commit-ai config set model qwen2.5:1.5b
+gitcai config set provider ollama
+gitcai config set ollamaUrl http://localhost:11434
+gitcai config set model qwen2.5:1.5b
 ```
 
 Remote Ollama:
 
 ```bash
-commit-ai config set provider ollama
-commit-ai config set ollamaUrl https://ai.example.com
-commit-ai config set model qwen2.5:1.5b
+gitcai config set provider ollama
+gitcai config set ollamaUrl https://ai.example.com
+gitcai config set model qwen2.5:1.5b
 ```
 
 Use without saving config:
 
 ```bash
-commit-ai --provider ollama --ollama-url http://localhost:11434 --model qwen2.5:1.5b
+gitcai --provider ollama --ollama-url http://localhost:11434 --model qwen2.5:1.5b
 ```
 
 ## Gemini Setup
@@ -165,29 +165,29 @@ commit-ai --provider ollama --ollama-url http://localhost:11434 --model qwen2.5:
 Save Gemini config:
 
 ```bash
-commit-ai config set provider gemini
-commit-ai config set model gemini-2.5-flash
-commit-ai config set geminiApiKey YOUR_API_KEY
+gitcai config set provider gemini
+gitcai config set model gemini-2.5-flash
+gitcai config set geminiApiKey YOUR_API_KEY
 ```
 
 Use an environment variable instead:
 
 ```bash
 set GEMINI_API_KEY=YOUR_API_KEY
-commit-ai --provider gemini
+gitcai --provider gemini
 ```
 
 On macOS or Linux:
 
 ```bash
 export GEMINI_API_KEY=YOUR_API_KEY
-commit-ai --provider gemini
+gitcai --provider gemini
 ```
 
 Use without saving config:
 
 ```bash
-commit-ai --provider gemini --gemini-api-key YOUR_API_KEY --model gemini-1.5-flash
+gitcai --provider gemini --gemini-api-key YOUR_API_KEY --model gemini-1.5-flash
 ```
 
 ## Config Commands
@@ -195,37 +195,37 @@ commit-ai --provider gemini --gemini-api-key YOUR_API_KEY --model gemini-1.5-fla
 Run setup again:
 
 ```bash
-commit-ai config setup
+gitcai config setup
 ```
 
 Show all config:
 
 ```bash
-commit-ai config list
+gitcai config list
 ```
 
 Get one value:
 
 ```bash
-commit-ai config get provider
+gitcai config get provider
 ```
 
 Set one value:
 
 ```bash
-commit-ai config set language vi
+gitcai config set language vi
 ```
 
 Reset config:
 
 ```bash
-commit-ai config reset
+gitcai config reset
 ```
 
 Show config file path:
 
 ```bash
-commit-ai config path
+gitcai config path
 ```
 
 Config is stored in a user-level JSON file using `conf`. It is not committed to your project.
@@ -233,25 +233,25 @@ Config is stored in a user-level JSON file using `conf`. It is not committed to 
 ## Useful Options
 
 ```bash
-commit-ai --provider ollama
-commit-ai --provider gemini
-commit-ai --language en
-commit-ai --language vi
-commit-ai --max-length 72
-commit-ai --max-diff-chars 10000
-commit-ai --temperature 0.2
+gitcai --provider ollama
+gitcai --provider gemini
+gitcai --language en
+gitcai --language vi
+gitcai --max-length 72
+gitcai --max-diff-chars 10000
+gitcai --temperature 0.2
 ```
 
 Ollama-specific:
 
 ```bash
-commit-ai --num-predict 40
+gitcai --num-predict 40
 ```
 
 Gemini-specific:
 
 ```bash
-commit-ai --max-output-tokens 1280
+gitcai --max-output-tokens 1280
 ```
 
 ## Troubleshooting
@@ -262,7 +262,7 @@ Run the command inside a Git repository:
 
 ```bash
 cd path/to/your/repo
-commit-ai
+gitcai
 ```
 
 ### Ollama Request Timeout
@@ -270,7 +270,7 @@ commit-ai
 If your Ollama server is slow or behind a proxy, reduce the diff size:
 
 ```bash
-commit-ai --max-diff-chars 2000 --num-predict 30
+gitcai --max-diff-chars 2000 --num-predict 30
 ```
 
 ### Gemini API Key Missing
@@ -278,7 +278,7 @@ commit-ai --max-diff-chars 2000 --num-predict 30
 Set the key:
 
 ```bash
-commit-ai config set geminiApiKey YOUR_API_KEY
+gitcai config set geminiApiKey YOUR_API_KEY
 ```
 
 or:
@@ -307,7 +307,7 @@ Link locally:
 ```bash
 yarn build
 yarn link
-commit-ai --help
+gitcai --help
 ```
 
 Unlink:
@@ -318,4 +318,4 @@ yarn unlink
 
 ## Security Notes
 
-`commit-ai` sends your staged diff to the configured AI provider. Do not use a remote provider for changes that contain secrets, credentials, private keys, or sensitive code.
+`gitcai` sends your staged diff to the configured AI provider. Do not use a remote provider for changes that contain secrets, credentials, private keys, or sensitive code.

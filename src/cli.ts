@@ -9,7 +9,7 @@ const commitCommand = createCommitCommand();
 const configCommand = createConfigCommand();
 
 program
-  .name("commit-ai")
+  .name("gitcai")
   .description("Generate Git commit messages with self-hosted AI")
   .version("1.0.0")
   .addCommand(commitCommand)
@@ -48,7 +48,7 @@ program
     "1280",
   )
   .action(async () => {
-    const args = ["node", "commit-ai", ...process.argv.slice(2)];
+    const args = ["node", "gitcai", ...process.argv.slice(2)];
     await commitCommand.parseAsync(args);
   });
 

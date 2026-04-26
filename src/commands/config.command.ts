@@ -129,7 +129,7 @@ export const runInteractiveConfigSetup = async (): Promise<void> => {
 export const createConfigCommand = (): Command => {
   const command = new Command("config");
 
-  command.description("Manage commit-ai configuration");
+  command.description("Manage gitcai configuration");
 
   command
     .command("setup")
