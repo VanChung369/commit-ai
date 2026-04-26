@@ -1,8 +1,9 @@
-import chalk from "chalk";
 import { Command } from "commander";
 import ora from "ora";
 import { OllamaProvider } from "../ai/ollama.provider.js";
 import { runCommitFlow } from "../core/commit-flow.js";
+import { CliError, getErrorMessage, getExitCode } from "../utils/errors.js";
+import { logger } from "../utils/logger.js";
 
 interface CommitCommandOptions {
   push?: boolean;
@@ -22,7 +23,7 @@ const parseNumberOption = (value: string): number => {
   const parsed = Number(value);
 
   if (Number.isNaN(parsed)) {
-    throw new Error(`Invalid number: ${value}`);
+    throw new CliError(`Invalid number: ${value}`);
   }
 
   return parsed;
@@ -96,34 +97,32 @@ export const createCommitCommand = (): Command => {
         });
 
         if (result.reason === "not-a-repository") {
-          console.log(chalk.red("Current directory is not a Git repository."));
+          logger.error("Current directory is not a Git repository.");
           process.exitCode = 1;
           return;
         }
 
         if (result.reason === "no-changes") {
-          console.log(chalk.yellow("No changes to commit."));
+          logger.warn("No changes to commit.");
           return;
         }
 
         if (result.reason === "cancelled") {
-          console.log(chalk.yellow("Commit cancelled."));
+          logger.warn("Commit cancelled.");
           return;
         }
 
-        console.log(chalk.green("Commit successful"));
-        console.log(chalk.gray(`Message: ${result.message}`));
+        logger.success("Commit successful");
+        logger.muted(`Message: ${result.message}`);
 
         if (result.pushed) {
-          console.log(chalk.green("Push successful"));
+          logger.success("Push successful");
         }
       } catch (error) {
         spinner.stop();
-        const message =
-          error instanceof Error ? error.message : "Unknown commit error";
 
-        console.error(chalk.red("Commit failed:"), message);
-        process.exitCode = 1;
+        logger.error(`Commit failed: ${getErrorMessage(error)}`);
+        process.exitCode = getExitCode(error);
       }
     });
 

@@ -66,7 +66,7 @@ export const runCommitFlow = async (
   let generatedMessage: string;
 
   options.onGenerateStart?.();
-  console.log("prompt", prompt);
+
   try {
     generatedMessage = await options.provider.generateCommitMessage({
       diff,

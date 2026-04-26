@@ -4,6 +4,7 @@ export interface OllamaProviderOptions {
   baseUrl?: string;
   model?: string;
   temperature?: number;
+  numPredict?: number;
 }
 
 interface OllamaGenerateResponse {
@@ -17,6 +18,7 @@ export class OllamaProvider implements AiProvider {
   private readonly baseUrl: string;
   private readonly model: string;
   private readonly temperature: number;
+  private readonly numPredict: number;
 
   constructor(options: OllamaProviderOptions = {}) {
     this.baseUrl = (options.baseUrl ?? "http://localhost:11434").replace(
@@ -25,6 +27,7 @@ export class OllamaProvider implements AiProvider {
     );
     this.model = options.model ?? "qwen2.5:1.5b";
     this.temperature = options.temperature ?? 0.2;
+    this.numPredict = options.numPredict ?? 40;
   }
 
   async generateCommitMessage(
@@ -41,6 +44,7 @@ export class OllamaProvider implements AiProvider {
         stream: false,
         options: {
           temperature: this.temperature,
+          num_predict: this.numPredict,
         },
       }),
     });

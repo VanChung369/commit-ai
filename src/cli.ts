@@ -21,7 +21,13 @@ program
   .option("--ollama-url <url>", "Ollama base URL", "http://localhost:11434")
   .option("-t, --temperature <number>", "Ollama generation temperature", "0.2")
   .option("--language <language>", "commit message language: en or vi", "en")
-  .option("--max-length <number>", "maximum commit message length", "100")
+  .option("--max-length <number>", "maximum commit message length", "72")
+  .option(
+    "--max-diff-chars <number>",
+    "maximum diff characters sent to the model",
+    "4000",
+  )
+  .option("--num-predict <number>", "maximum tokens Ollama should generate", "40")
   .action(async () => {
     const args = ["node", "commit-ai", ...process.argv.slice(2)];
     await commitCommand.parseAsync(args);
