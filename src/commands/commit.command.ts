@@ -185,7 +185,7 @@ export const createCommitCommand = (): Command => {
       "--max-diff-chars <number>",
       "maximum diff characters sent to the model",
       parseNumberOption,
-      4000,
+      10000,
     )
     .option(
       "--num-predict <number>",
@@ -197,7 +197,7 @@ export const createCommitCommand = (): Command => {
       "--max-output-tokens <number>",
       "maximum tokens Gemini should generate",
       parseNumberOption,
-      512,
+      1280,
     )
     .action(async (options: CommitCommandOptions, command: Command) => {
       const spinner = ora("Generating commit message");

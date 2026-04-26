@@ -59,7 +59,7 @@ export class GeminiProvider implements AiProvider {
       options.baseUrl ?? "https://generativelanguage.googleapis.com/v1beta"
     ).replace(/\/+$/, "");
     this.temperature = options.temperature ?? 0;
-    this.maxOutputTokens = options.maxOutputTokens ?? 512;
+    this.maxOutputTokens = options.maxOutputTokens ?? 1280;
   }
 
   async generateCommitMessage(

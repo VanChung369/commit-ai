@@ -238,7 +238,7 @@ commit-ai --provider gemini
 commit-ai --language en
 commit-ai --language vi
 commit-ai --max-length 72
-commit-ai --max-diff-chars 4000
+commit-ai --max-diff-chars 10000
 commit-ai --temperature 0.2
 ```
 
@@ -251,7 +251,7 @@ commit-ai --num-predict 40
 Gemini-specific:
 
 ```bash
-commit-ai --max-output-tokens 80
+commit-ai --max-output-tokens 1280
 ```
 
 ## Troubleshooting

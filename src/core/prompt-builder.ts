@@ -20,7 +20,7 @@ export const buildCommitPrompt = (
 ): string => {
   const language = options.language ?? "en";
   const maxLength = options.maxLength ?? 72;
-  const maxDiffChars = options.maxDiffChars ?? 4000;
+  const maxDiffChars = options.maxDiffChars ?? 10000;
   const preparedDiff = truncateDiff(diff, maxDiffChars);
   const languageRule =
     language === "vi"

@@ -35,7 +35,7 @@ program
   .option(
     "--max-diff-chars <number>",
     "maximum diff characters sent to the model",
-    "4000",
+    "10000",
   )
   .option(
     "--num-predict <number>",
@@ -45,7 +45,7 @@ program
   .option(
     "--max-output-tokens <number>",
     "maximum tokens Gemini should generate",
-    "512",
+    "1280",
   )
   .action(async () => {
     const args = ["node", "commit-ai", ...process.argv.slice(2)];

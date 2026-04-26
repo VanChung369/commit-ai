@@ -1,7 +1,10 @@
 {
   "name": "commit-ai",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./dist/cli.js",
+  "engines": {
+    "node": ">=20"
+  },
   "repository": "https://github.com/VanChung369/commit-ai.git",
   "license": "MIT",
   "type": "module",
@@ -14,12 +17,14 @@
   ],
   "scripts": {
     "dev": "tsx src/cli.ts",
+    "prebuild": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "tsc",
+    "prepack": "yarn build",
+    "prepublishOnly": "yarn build",
     "start": "node dist/cli.js"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
-    "ts-node-dev": "^2.0.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
   },
@@ -29,7 +34,6 @@
     "commander": "^14.0.3",
     "conf": "^15.1.0",
     "ora": "^9.4.0",
-    "simple-git": "^3.36.0",
-    "zod": "^4.3.6"
+    "simple-git": "^3.36.0"
   }
 }

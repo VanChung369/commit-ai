@@ -29,6 +29,14 @@ const printConfig = (): void => {
   );
 };
 
+const formatConfigValue = (key: string, value: unknown): string => {
+  if (key === "geminiApiKey" && value) {
+    return "***";
+  }
+
+  return typeof value === "string" ? value : JSON.stringify(value, null, 2);
+};
+
 const askSharedConfig = async (): Promise<
   Pick<CommitAiConfig, "provider" | "language">
 > => {
@@ -152,9 +160,7 @@ export const createConfigCommand = (): Command => {
     .action((key: string) => {
       try {
         const value = getConfigValue(key);
-        console.log(
-          typeof value === "string" ? value : JSON.stringify(value, null, 2),
-        );
+        console.log(formatConfigValue(key, value));
       } catch (error) {
         logger.error(`Config failed: ${getErrorMessage(error)}`);
         process.exitCode = getExitCode(error);
