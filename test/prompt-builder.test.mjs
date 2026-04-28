@@ -20,3 +20,10 @@ test("buildCommitPrompt applies Vietnamese language rule", () => {
 
   assert.match(prompt, /Write the description in Vietnamese/);
 });
+
+test("buildCommitPrompt uses updated defaults and commit types", () => {
+  const prompt = buildCommitPrompt("diff --git a/a b/a");
+
+  assert.match(prompt, /max 125 characters/);
+  assert.match(prompt, /build, ci, revert/);
+});

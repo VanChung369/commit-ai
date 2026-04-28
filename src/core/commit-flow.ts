@@ -37,7 +37,7 @@ export const runCommitFlow = async (
   const autoStage = options.autoStage ?? true;
   const editEnabled = options.editMessage ?? true;
   const confirmEnabled = options.confirmCommit ?? true;
-  const maxLength = options.prompt?.maxLength ?? 100;
+  const maxLength = options.prompt?.maxLength ?? 125;
 
   const isRepository = await git.isRepository();
 

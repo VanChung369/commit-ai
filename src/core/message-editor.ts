@@ -7,11 +7,28 @@ export interface EditCommitMessageOptions {
 
 const fallbackCommitMessage = "chore(repo): update code";
 
+const commitTypes = [
+  "feat",
+  "fix",
+  "refactor",
+  "chore",
+  "docs",
+  "style",
+  "test",
+  "perf",
+  "build",
+  "ci",
+  "revert",
+].join("|");
+
 const conventionalCommitPattern =
-  /^(feat|fix|refactor|chore|docs|style|test|perf)\([^)]+\): .+$/;
+  new RegExp(`^(${commitTypes})\\([^)]+\\)!?: .+$`);
 
 const commitMessagePattern =
-  /\b(feat|fix|refactor|chore|docs|style|test|perf)(?:\(([^)\r\n]+)\))?:\s+([^\r\n`"]+)/i;
+  new RegExp(
+    `\\b(${commitTypes})(?:\\(([^)\\r\\n]+)\\))?(!)?:\\s+([^\\r\\n\`"]+)`,
+    "i",
+  );
 
 const normalizeGeneratedCommitMessage = (
   generatedMessage: string,
@@ -42,8 +59,9 @@ const normalizeGeneratedCommitMessage = (
 
     const type = match[1].toLowerCase();
     const scope = (match[2] ?? "repo").trim().toLowerCase();
-    const description = match[3].trim().replace(/[.!?]+$/, "");
-    const normalizedMessage = `${type}(${scope}): ${description}`;
+    const breakingMarker = match[3] ?? "";
+    const description = match[4].trim().replace(/[.!?]+$/, "");
+    const normalizedMessage = `${type}(${scope})${breakingMarker}: ${description}`;
 
     if (normalizedMessage.length <= maxLength) {
       return normalizedMessage;
@@ -79,7 +97,7 @@ export const editCommitMessage = async (
   options: EditCommitMessageOptions = {},
 ): Promise<string> => {
   const enabled = options.enabled ?? true;
-  const maxLength = options.maxLength ?? 72;
+  const maxLength = options.maxLength ?? 125;
   const initialMessage = normalizeGeneratedCommitMessage(
     generatedMessage,
     maxLength,

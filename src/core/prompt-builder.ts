@@ -19,7 +19,7 @@ export const buildCommitPrompt = (
   options: BuildPromptOptions = {},
 ): string => {
   const language = options.language ?? "en";
-  const maxLength = options.maxLength ?? 72;
+  const maxLength = options.maxLength ?? 125;
   const maxDiffChars = options.maxDiffChars ?? 10000;
   const preparedDiff = truncateDiff(diff, maxDiffChars);
   const languageRule =
@@ -33,7 +33,7 @@ Task: write ONE git commit message for the diff.
 Return only one line in this exact format:
 type(scope): description
 
-Types: feat, fix, refactor, chore, docs, style, test, perf
+Types: feat, fix, refactor, chore, docs, style, test, perf, build, ci, revert
 Rules:
 - one line only
 - no markdown

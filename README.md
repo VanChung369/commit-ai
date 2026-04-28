@@ -248,7 +248,7 @@ gitcai --provider ollama
 gitcai --provider gemini
 gitcai --language en
 gitcai --language vi
-gitcai --max-length 72
+gitcai --max-length 125
 gitcai --max-diff-chars 10000
 gitcai --temperature 0.2
 gitcai --thinking

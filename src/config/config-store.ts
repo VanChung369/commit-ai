@@ -30,7 +30,7 @@ export const defaultConfig: CommitAiConfig = {
   geminiBaseUrl: "https://generativelanguage.googleapis.com/v1beta",
   temperature: 0,
   language: "en",
-  maxLength: 72,
+  maxLength: 125,
   maxDiffChars: 10000,
   numPredict: 40,
   maxOutputTokens: 1280,
