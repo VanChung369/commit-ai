@@ -7,6 +7,7 @@ export interface GeminiProviderOptions {
   baseUrl?: string;
   temperature?: number;
   maxOutputTokens?: number;
+  thinking?: boolean;
 }
 
 interface GeminiPart {
@@ -40,6 +41,7 @@ export class GeminiProvider implements AiProvider {
   private readonly baseUrl: string;
   private readonly temperature: number;
   private readonly maxOutputTokens: number;
+  private readonly thinking: boolean;
 
   constructor(options: GeminiProviderOptions = {}) {
     const apiKey =
@@ -60,11 +62,28 @@ export class GeminiProvider implements AiProvider {
     ).replace(/\/+$/, "");
     this.temperature = options.temperature ?? 0;
     this.maxOutputTokens = options.maxOutputTokens ?? 1280;
+    this.thinking = options.thinking ?? false;
+  }
+
+  private getThinkingConfig():
+    | { thinkingBudget: number }
+    | { thinkingLevel: "minimal" }
+    | undefined {
+    if (this.thinking) {
+      return undefined;
+    }
+
+    if (this.model.startsWith("gemini-3")) {
+      return { thinkingLevel: "minimal" };
+    }
+
+    return { thinkingBudget: 0 };
   }
 
   async generateCommitMessage(
     input: GenerateCommitMessageInput,
   ): Promise<string> {
+    const thinkingConfig = this.getThinkingConfig();
     const response = await fetch(
       `${this.baseUrl}/models/${this.model}:generateContent`,
       {
@@ -83,6 +102,7 @@ export class GeminiProvider implements AiProvider {
           generationConfig: {
             temperature: this.temperature,
             maxOutputTokens: this.maxOutputTokens,
+            ...(thinkingConfig ? { thinkingConfig } : {}),
           },
         }),
       },

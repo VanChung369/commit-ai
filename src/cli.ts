@@ -47,6 +47,8 @@ program
     "maximum tokens Gemini should generate",
     "1280",
   )
+  .option("--thinking", "allow provider thinking/reasoning when supported")
+  .option("--no-thinking", "disable provider thinking/reasoning when supported")
   .action(async () => {
     const args = ["node", "gitcai", ...process.argv.slice(2)];
     await commitCommand.parseAsync(args);

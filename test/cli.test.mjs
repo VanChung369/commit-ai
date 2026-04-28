@@ -13,6 +13,7 @@ test("CLI help exposes push and provider options", async () => {
 
   assert.match(stdout, /--push/);
   assert.match(stdout, /--provider <provider>/);
+  assert.match(stdout, /--thinking/);
   assert.match(stdout, /config/);
 });
 

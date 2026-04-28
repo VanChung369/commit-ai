@@ -224,6 +224,7 @@ Set one value:
 
 ```bash
 gitcai config set language vi
+gitcai config set thinking false
 ```
 
 Reset config:
@@ -250,7 +251,11 @@ gitcai --language vi
 gitcai --max-length 72
 gitcai --max-diff-chars 10000
 gitcai --temperature 0.2
+gitcai --thinking
+gitcai --no-thinking
 ```
+
+Thinking is disabled by default because commit messages should be one concise line. Enable it only if your selected model needs reasoning for better output.
 
 Ollama-specific:
 

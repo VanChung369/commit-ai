@@ -17,6 +17,7 @@ export interface CommitAiConfig {
   maxDiffChars: number;
   numPredict: number;
   maxOutputTokens: number;
+  thinking: boolean;
   autoStage: boolean;
   editMessage: boolean;
   confirmCommit: boolean;
@@ -33,6 +34,7 @@ export const defaultConfig: CommitAiConfig = {
   maxDiffChars: 10000,
   numPredict: 40,
   maxOutputTokens: 1280,
+  thinking: false,
   autoStage: true,
   editMessage: true,
   confirmCommit: true,
@@ -53,6 +55,7 @@ export const configKeys: ConfigKey[] = [
   "maxDiffChars",
   "numPredict",
   "maxOutputTokens",
+  "thinking",
   "autoStage",
   "editMessage",
   "confirmCommit",
@@ -73,6 +76,7 @@ const numberKeys = new Set<ConfigKey>([
 
 const booleanKeys = new Set<ConfigKey>([
   "initialized",
+  "thinking",
   "autoStage",
   "editMessage",
   "confirmCommit",

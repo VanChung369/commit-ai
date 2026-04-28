@@ -83,6 +83,138 @@ test("GeminiProvider joins all returned text parts", async () => {
   }
 });
 
+test("GeminiProvider disables thinking with thinkingBudget for 2.5 models", async () => {
+  const originalFetch = globalThis.fetch;
+  let requestBody;
+
+  globalThis.fetch = async (_url, init) => {
+    requestBody = JSON.parse(init.body);
+
+    return new Response(
+      JSON.stringify({
+        candidates: [
+          {
+            finishReason: "STOP",
+            content: {
+              parts: [{ text: "chore(repo): update code" }],
+            },
+          },
+        ],
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  };
+
+  try {
+    const provider = new GeminiProvider({
+      apiKey: "test-key",
+      model: "gemini-2.5-flash",
+      thinking: false,
+    });
+
+    await provider.generateCommitMessage({
+      diff: "diff",
+      prompt: "prompt",
+    });
+
+    assert.deepEqual(requestBody.generationConfig.thinkingConfig, {
+      thinkingBudget: 0,
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("GeminiProvider uses minimal thinking for Gemini 3 models", async () => {
+  const originalFetch = globalThis.fetch;
+  let requestBody;
+
+  globalThis.fetch = async (_url, init) => {
+    requestBody = JSON.parse(init.body);
+
+    return new Response(
+      JSON.stringify({
+        candidates: [
+          {
+            finishReason: "STOP",
+            content: {
+              parts: [{ text: "chore(repo): update code" }],
+            },
+          },
+        ],
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  };
+
+  try {
+    const provider = new GeminiProvider({
+      apiKey: "test-key",
+      model: "gemini-3-flash-preview",
+      thinking: false,
+    });
+
+    await provider.generateCommitMessage({
+      diff: "diff",
+      prompt: "prompt",
+    });
+
+    assert.deepEqual(requestBody.generationConfig.thinkingConfig, {
+      thinkingLevel: "minimal",
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("GeminiProvider omits thinking config when thinking is enabled", async () => {
+  const originalFetch = globalThis.fetch;
+  let requestBody;
+
+  globalThis.fetch = async (_url, init) => {
+    requestBody = JSON.parse(init.body);
+
+    return new Response(
+      JSON.stringify({
+        candidates: [
+          {
+            finishReason: "STOP",
+            content: {
+              parts: [{ text: "chore(repo): update code" }],
+            },
+          },
+        ],
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  };
+
+  try {
+    const provider = new GeminiProvider({
+      apiKey: "test-key",
+      thinking: true,
+    });
+
+    await provider.generateCommitMessage({
+      diff: "diff",
+      prompt: "prompt",
+    });
+
+    assert.equal(requestBody.generationConfig.thinkingConfig, undefined);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("GeminiProvider rejects unusable truncated responses", async () => {
   const originalFetch = globalThis.fetch;
 

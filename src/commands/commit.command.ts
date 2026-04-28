@@ -26,6 +26,7 @@ interface CommitCommandOptions {
   maxDiffChars?: number;
   numPredict?: number;
   maxOutputTokens?: number;
+  thinking?: boolean;
 }
 
 type ConfigBackedOptionKey = Extract<
@@ -61,6 +62,7 @@ const createProvider = (options: CommitCommandOptions): AiProvider => {
       model: options.model,
       temperature: options.temperature,
       maxOutputTokens: options.maxOutputTokens,
+      thinking: options.thinking,
     });
   }
 
@@ -69,6 +71,7 @@ const createProvider = (options: CommitCommandOptions): AiProvider => {
     model: options.model,
     temperature: options.temperature,
     numPredict: options.numPredict,
+    thinking: options.thinking,
   });
 };
 
@@ -101,6 +104,7 @@ const resolveCommitOptions = (
     maxDiffChars: config.maxDiffChars,
     numPredict: config.numPredict,
     maxOutputTokens: config.maxOutputTokens,
+    thinking: config.thinking,
     push: options.push ?? false,
     autoStage: config.autoStage,
     editMessage: config.editMessage,
@@ -119,6 +123,7 @@ const resolveCommitOptions = (
     "maxDiffChars",
     "numPredict",
     "maxOutputTokens",
+    "thinking",
   ];
 
   const resolvedValues = resolved as unknown as Record<string, unknown>;
@@ -198,6 +203,15 @@ export const createCommitCommand = (): Command => {
       "maximum tokens Gemini should generate",
       parseNumberOption,
       1280,
+    )
+    .option(
+      "--thinking",
+      "allow provider thinking/reasoning when supported",
+      false,
+    )
+    .option(
+      "--no-thinking",
+      "disable provider thinking/reasoning when supported",
     )
     .action(async (options: CommitCommandOptions, command: Command) => {
       const spinner = ora("Generating commit message");
